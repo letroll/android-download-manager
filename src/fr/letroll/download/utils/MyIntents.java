@@ -3,7 +3,7 @@ package fr.letroll.download.utils;
 public class MyIntents {
 
 	public static final String DownloadService = "fr.letroll.download.services.IDownloadService";
-	
+	public static final String DownloadListActivity = "fr.letroll.download.activities.DownloadListActivity";
 	public static final String TYPE = "type";
 	public static final String PROCESS_SPEED = "process_speed";
 	public static final String PROCESS_PROGRESS = "process_progress";
@@ -24,5 +24,6 @@ public class MyIntents {
 		public static final int ADD = 6;
 		public static final int STOP = 7; 
 		public static final int ERROR = 9;
+		public static final int EMPTY = 10;
 	}
 }

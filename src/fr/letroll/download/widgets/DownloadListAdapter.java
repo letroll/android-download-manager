@@ -44,8 +44,7 @@ public class DownloadListAdapter extends BaseAdapter {
 	}
 
 	public void addItem(String url, boolean isPaused) {
-		HashMap<Integer, String> item = ViewHolder.getItemDataMap(url, null,
-				null, isPaused + "");
+		HashMap<Integer, String> item = ViewHolder.getItemDataMap(url, null, null, isPaused + "");
 		dataList.add(item);
 		this.notifyDataSetChanged();
 	}
@@ -64,8 +63,7 @@ public class DownloadListAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		if (convertView == null) {
-			convertView = LayoutInflater.from(mContext).inflate(
-					R.layout.download_list_item, null);
+			convertView = LayoutInflater.from(mContext).inflate(R.layout.download_list_item, null);
 		}
 
 		HashMap<Integer, String> itemData = dataList.get(position);
@@ -75,12 +73,9 @@ public class DownloadListAdapter extends BaseAdapter {
 		ViewHolder viewHolder = new ViewHolder(convertView);
 		viewHolder.setData(itemData);
 
-		viewHolder.continueButton.setOnClickListener(new DownloadBtnListener(
-				url, viewHolder));
-		viewHolder.pauseButton.setOnClickListener(new DownloadBtnListener(url,
-				viewHolder));
-		viewHolder.deleteButton.setOnClickListener(new DownloadBtnListener(url,
-				viewHolder));
+		viewHolder.continueButton.setOnClickListener(new DownloadBtnListener(url, viewHolder));
+		viewHolder.pauseButton.setOnClickListener(new DownloadBtnListener(url, viewHolder));
+		viewHolder.deleteButton.setOnClickListener(new DownloadBtnListener(url, viewHolder));
 
 		return convertView;
 	}
@@ -96,14 +91,12 @@ public class DownloadListAdapter extends BaseAdapter {
 
 		@Override
 		public void onClick(View v) {
-			Intent downloadIntent = new Intent(
-					"fr.letroll.download.services.IDownloadService");
+			Intent downloadIntent = new Intent(MyIntents.DownloadService);
 
 			switch (v.getId()) {
 			case R.id.btn_continue:
 				// mDownloadManager.continueTask(mPosition);
-				downloadIntent.putExtra(MyIntents.TYPE,
-						MyIntents.Types.CONTINUE);
+				downloadIntent.putExtra(MyIntents.TYPE, MyIntents.Types.CONTINUE);
 				downloadIntent.putExtra(MyIntents.URL, url);
 				mContext.startService(downloadIntent);
 

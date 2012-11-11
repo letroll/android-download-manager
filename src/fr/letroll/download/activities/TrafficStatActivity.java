@@ -35,15 +35,12 @@ public class TrafficStatActivity extends Activity {
 		appGprsText = (TextView) findViewById(R.id.app_gprs_text);
 		testText = (TextView) findViewById(R.id.test_text);
 		clearButton = (Button) findViewById(R.id.btn_clear);
-
 		clearButton.setOnClickListener(new View.OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
 				clearTrafficStats();
 			}
 		});
-
 		getTrafficStats();
 	}
 
@@ -53,14 +50,11 @@ public class TrafficStatActivity extends Activity {
 		ConfigUtils.setLong(this, ConfigUtils.KEY_TX_MOBILE, 0L);
 		ConfigUtils.setLong(this, ConfigUtils.KEY_TX_WIFI, 0L);
 		ConfigUtils.setString(this, ConfigUtils.KEY_Network_Operator_Name, "");
-
 		getTrafficStats();
 	}
 
 	private void getTrafficStats() {
-
 		ConnectivityManager conn = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-
 		if (conn.getActiveNetworkInfo() == null) {
 			netText.setText(getString(R.string.network_not_connected) + "\n"+getString(R.string.mobile_operators)+"：" + ConfigUtils.getString(this, ConfigUtils.KEY_Network_Operator_Name));
 		} else {

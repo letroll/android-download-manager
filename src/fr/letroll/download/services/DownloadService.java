@@ -16,27 +16,22 @@ public class DownloadService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
-
 		return new DownloadServiceImpl();
 	}
 
 	@Override
 	public void onCreate() {
-
 		super.onCreate();
 		mDownloadManager = new DownloadManager(this);
 	}
 
 	@Override
 	public void onStart(Intent intent, int startId) {
-
 		super.onStart(intent, startId);
-
 		// if (mDownloadManager == null) {
 		// mDownloadManager = new DownloadManager(this);
 		// }
-
-		if (intent.getAction().equals("fr.letroll.download.services.IDownloadService")) {
+		if (intent.getAction().equals(MyIntents.DownloadService)) {
 			int type = intent.getIntExtra(MyIntents.TYPE, -1);
 			String url;
 
@@ -74,9 +69,10 @@ public class DownloadService extends Service {
 				break;
 			case MyIntents.Types.STOP:
 				mDownloadManager.close();
-				// mDownloadManager = null;
 				break;
-
+			case MyIntents.Types.EMPTY:
+				mDownloadManager.empty();
+				break;
 			default:
 				break;
 			}
@@ -85,7 +81,6 @@ public class DownloadService extends Service {
 	}
 
 	private class DownloadServiceImpl extends IDownloadService.Stub {
-
 		@Override
 		public void startManage() throws RemoteException {
 			mDownloadManager.startManage();
@@ -102,6 +97,11 @@ public class DownloadService extends Service {
 		}
 
 		@Override
+        public void pauseTasks() throws RemoteException {
+	        mDownloadManager.close();
+        }
+		
+		@Override
 		public void deleteTask(String url) throws RemoteException {
 			mDownloadManager.deleteTask(url);
 		}
@@ -110,6 +110,11 @@ public class DownloadService extends Service {
 		public void continueTask(String url) throws RemoteException {
 			mDownloadManager.continueTask(url);
 		}
+
+		@Override
+        public void deleteTasks() throws RemoteException {
+	        mDownloadManager.empty();
+        }
 
 	}
 

@@ -8,7 +8,11 @@ interface IDownloadService {
 	
 	void pauseTask(String url);
 	
+	void pauseTasks();
+	
 	void deleteTask(String url);
+
+	void deleteTasks();	
 	
 	void continueTask(String url);
 }

@@ -1,4 +1,3 @@
-
 package fr.letroll.download.activities;
 
 import fr.letroll.download.R;
@@ -28,223 +27,196 @@ import java.io.IOException;
 
 public class DownloadListActivity extends Activity {
 
-    private ListView downloadList;
-    private Button addButton;
-    private Button pauseButton;
-    private Button deleteButton;
-    private Button trafficButton;
+	private ListView downloadList;
+	private Button addButton;
+	private Button pauseButton;
+	private Button deleteButton;
+	private Button trafficButton;
 
-    private DownloadListAdapter downloadListAdapter;
-    private MyReceiver mReceiver;
+	private DownloadListAdapter downloadListAdapter;
+	private MyReceiver mReceiver;
 
-    private int urlIndex = 0;
+	private int urlIndex = 0;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.download_list_activity);
+		if (!StorageUtils.isSDCardPresent()) {
+			Toast.makeText(this, "Aucune carte SD trouvé", Toast.LENGTH_LONG).show();
+			return;
+		}
+		if (!StorageUtils.isSdCardWrittenable()) {
+			Toast.makeText(this, "La carte SD n'est pas inscriptible", Toast.LENGTH_LONG).show();
+			return;
+		}
+		try {
+			StorageUtils.mkdir();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-        super.onCreate(savedInstanceState);
+		downloadList = (ListView) findViewById(R.id.download_list);
+		downloadListAdapter = new DownloadListAdapter(this);
+		downloadList.setAdapter(downloadListAdapter);
 
-        setContentView(R.layout.download_list_activity);
+		addButton = (Button) findViewById(R.id.btn_add);
+		pauseButton = (Button) findViewById(R.id.btn_pause_all);
+		deleteButton = (Button) findViewById(R.id.btn_delete_all);
+		trafficButton = (Button) findViewById(R.id.btn_traffic);
 
-        if (!StorageUtils.isSDCardPresent()) {
-            Toast.makeText(this, "Aucune carte SD trouvé", Toast.LENGTH_LONG).show();
-            return;
-        }
+		addButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// downloadManager.addTask(Utils.url[urlIndex]);
+				Intent downloadIntent = new Intent(MyIntents.DownloadService);
+				downloadIntent.putExtra(MyIntents.TYPE, MyIntents.Types.ADD);
+				downloadIntent.putExtra(MyIntents.URL, Utils.url[urlIndex]);
+				startService(downloadIntent);
 
-        if (!StorageUtils.isSdCardWrittenable()) {
-            Toast.makeText(this, "La carte SD n'est pas inscriptible", Toast.LENGTH_LONG).show();
-            return;
-        }
+				urlIndex++;
+				if (urlIndex >= Utils.url.length) {
+					urlIndex = 0;
+				}
+			}
+		});
 
-        try {
-            StorageUtils.mkdir();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+		pauseButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent downloadIntent = new Intent(MyIntents.DownloadService);
+				downloadIntent.putExtra(MyIntents.TYPE, MyIntents.Types.STOP);
+				startService(downloadIntent);
+				Intent trafficIntent = new Intent(DownloadListActivity.this, TrafficCounterService.class);
+				stopService(trafficIntent);				
+			}
+		});
 
-        downloadList = (ListView) findViewById(R.id.download_list);
-        downloadListAdapter = new DownloadListAdapter(this);
-        downloadList.setAdapter(downloadListAdapter);
+		deleteButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent downloadIntent = new Intent(MyIntents.DownloadService);
+				downloadIntent.putExtra(MyIntents.TYPE, MyIntents.Types.EMPTY);
+				startService(downloadIntent);
+				Intent trafficIntent = new Intent(DownloadListActivity.this, TrafficCounterService.class);
+				stopService(trafficIntent);		
+			}
+		});
 
-        addButton = (Button) findViewById(R.id.btn_add);
-        pauseButton = (Button) findViewById(R.id.btn_pause_all);
-        deleteButton = (Button) findViewById(R.id.btn_delete_all);
-        trafficButton = (Button) findViewById(R.id.btn_traffic);
+		trafficButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(DownloadListActivity.this, TrafficStatActivity.class);
+				startActivity(intent);
+			}
+		});
 
-        addButton.setOnClickListener(new View.OnClickListener() {
+		// downloadManager.startManage();
+		Intent trafficIntent = new Intent(this, TrafficCounterService.class);
+		startService(trafficIntent);
 
-            @Override
-            public void onClick(View v) {
+		Intent downloadIntent = new Intent(MyIntents.DownloadService);
+		downloadIntent.putExtra(MyIntents.TYPE, MyIntents.Types.START);
+		startService(downloadIntent);
 
-                // downloadManager.addTask(Utils.url[urlIndex]);
-                Intent downloadIntent = new Intent(MyIntents.DownloadService);
-                downloadIntent.putExtra(MyIntents.TYPE, MyIntents.Types.ADD);
-                downloadIntent.putExtra(MyIntents.URL, Utils.url[urlIndex]);
-                startService(downloadIntent);
+		// // handle intent
+		// Intent intent = getIntent();
+		// handleIntent(intent);
+		mReceiver = new MyReceiver();
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(MyIntents.DownloadListActivity);
+		registerReceiver(mReceiver, filter);
+	}
 
-                urlIndex++;
-                if (urlIndex >= Utils.url.length) {
-                    urlIndex = 0;
-                }
-            }
-        });
+	@Override
+	protected void onDestroy() {
+		unregisterReceiver(mReceiver);
+		super.onDestroy();
+	}
 
-        pauseButton.setOnClickListener(new View.OnClickListener() {
+	public class MyReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			handleIntent(intent);
+		}
 
-            @Override
-            public void onClick(View v) {
+		private void handleIntent(Intent intent) {
+			if (intent != null && intent.getAction().equals(MyIntents.DownloadListActivity)) {
+				int type = intent.getIntExtra(MyIntents.TYPE, -1);
+				String url;
+				switch (type) {
+				case MyIntents.Types.ADD:
+					url = intent.getStringExtra(MyIntents.URL);
+					boolean isPaused = intent.getBooleanExtra(MyIntents.IS_PAUSED, false);
+					if (!TextUtils.isEmpty(url)) {
+						downloadListAdapter.addItem(url, isPaused);
+					}
+					break;
+				case MyIntents.Types.COMPLETE:
+					url = intent.getStringExtra(MyIntents.URL);
+					if (!TextUtils.isEmpty(url)) {
+						downloadListAdapter.removeItem(url);
+					}
+					break;
+				case MyIntents.Types.PROCESS:
+					url = intent.getStringExtra(MyIntents.URL);
+					View taskListItem = downloadList.findViewWithTag(url);
+					ViewHolder viewHolder = new ViewHolder(taskListItem);
+					viewHolder.setData(url, intent.getStringExtra(MyIntents.PROCESS_SPEED), intent.getStringExtra(MyIntents.PROCESS_PROGRESS));
+					break;
+				case MyIntents.Types.ERROR:
+					url = intent.getStringExtra(MyIntents.URL);
+					// int errorCode =
+					// intent.getIntExtra(MyIntents.ERROR_CODE,
+					// DownloadTask.ERROR_UNKONW);
+					// handleError(url, errorCode);
+					break;
+				default:
+					break;
+				}
+			}
+		}
 
-            }
-        });
+		// private void handleError(String url, int code) {
+		//
+		// switch (code) {
+		// case DownloadTask.ERROR_BLOCK_INTERNET:
+		// case DownloadTask.ERROR_UNKOWN_HOST:
+		// showAlert("错误", "无法连接网络");
+		// View taskListItem = downloadList.findViewWithTag(url);
+		// ViewHolder viewHolder = new ViewHolder(taskListItem);
+		// viewHolder.onPause();
+		// break;
+		// case DownloadTask.ERROR_FILE_EXIST:
+		// showAlert("", "文件已经存在，取消下载");
+		// break;
+		// case DownloadTask.ERROR_SD_NO_MEMORY:
+		// showAlert("错误", "存储卡空间不足");
+		// break;
+		// case DownloadTask.ERROR_UNKONW:
+		//
+		// break;
+		// case DownloadTask.ERROR_TIME_OUT:
+		// showAlert("错误", "连接超时，请检查网络后重试");
+		// View timeoutItem = downloadList.findViewWithTag(url);
+		// ViewHolder timeoutHolder = new ViewHolder(timeoutItem);
+		// timeoutHolder.onPause();
+		// break;
+		//
+		// default:
+		// break;
+		// }
+		// }
 
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                // Intent downloadIntent = new
-                // Intent("fr.letroll.download.services.IDownloadService");
-                // downloadIntent.putExtra(MyIntents.TYPE,
-                // MyIntents.Types.STOP);
-                // startService(downloadIntent);
-                //
-                // Intent trafficIntent = new Intent(DownloadListActivity.this,
-                // TrafficCounterService.class);
-                // stopService(trafficIntent);
-            }
-        });
-
-        trafficButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(DownloadListActivity.this, TrafficStatActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        // downloadManager.startManage();
-        Intent trafficIntent = new Intent(this, TrafficCounterService.class);
-        startService(trafficIntent);
-
-        Intent downloadIntent = new Intent("fr.letroll.download.services.IDownloadService");
-        downloadIntent.putExtra(MyIntents.TYPE, MyIntents.Types.START);
-        startService(downloadIntent);
-
-        // // handle intent
-        // Intent intent = getIntent();
-        // handleIntent(intent);
-        mReceiver = new MyReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("fr.letroll.download.activities.DownloadListActivity");
-        registerReceiver(mReceiver, filter);
-
-    }
-
-    @Override
-    protected void onDestroy() {
-
-        unregisterReceiver(mReceiver);
-
-        super.onDestroy();
-    }
-
-    public class MyReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            handleIntent(intent);
-
-        }
-
-        private void handleIntent(Intent intent) {
-
-            if (intent != null
-                    && intent.getAction().equals(
-                            "fr.letroll.download.activities.DownloadListActivity")) {
-                int type = intent.getIntExtra(MyIntents.TYPE, -1);
-                String url;
-
-                switch (type) {
-                    case MyIntents.Types.ADD:
-                        url = intent.getStringExtra(MyIntents.URL);
-                        boolean isPaused = intent.getBooleanExtra(MyIntents.IS_PAUSED, false);
-                        if (!TextUtils.isEmpty(url)) {
-                            downloadListAdapter.addItem(url, isPaused);
-                        }
-                        break;
-                    case MyIntents.Types.COMPLETE:
-                        url = intent.getStringExtra(MyIntents.URL);
-                        if (!TextUtils.isEmpty(url)) {
-                            downloadListAdapter.removeItem(url);
-                        }
-                        break;
-                    case MyIntents.Types.PROCESS:
-                        url = intent.getStringExtra(MyIntents.URL);
-                        View taskListItem = downloadList.findViewWithTag(url);
-                        ViewHolder viewHolder = new ViewHolder(taskListItem);
-                        viewHolder.setData(url, intent.getStringExtra(MyIntents.PROCESS_SPEED),
-                                intent.getStringExtra(MyIntents.PROCESS_PROGRESS));
-                        break;
-                    case MyIntents.Types.ERROR:
-                        url = intent.getStringExtra(MyIntents.URL);
-                        // int errorCode =
-                        // intent.getIntExtra(MyIntents.ERROR_CODE,
-                        // DownloadTask.ERROR_UNKONW);
-                        // handleError(url, errorCode);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-
-        // private void handleError(String url, int code) {
-        //
-        // switch (code) {
-        // case DownloadTask.ERROR_BLOCK_INTERNET:
-        // case DownloadTask.ERROR_UNKOWN_HOST:
-        // showAlert("错误", "无法连接网络");
-        // View taskListItem = downloadList.findViewWithTag(url);
-        // ViewHolder viewHolder = new ViewHolder(taskListItem);
-        // viewHolder.onPause();
-        // break;
-        // case DownloadTask.ERROR_FILE_EXIST:
-        // showAlert("", "文件已经存在，取消下载");
-        // break;
-        // case DownloadTask.ERROR_SD_NO_MEMORY:
-        // showAlert("错误", "存储卡空间不足");
-        // break;
-        // case DownloadTask.ERROR_UNKONW:
-        //
-        // break;
-        // case DownloadTask.ERROR_TIME_OUT:
-        // showAlert("错误", "连接超时，请检查网络后重试");
-        // View timeoutItem = downloadList.findViewWithTag(url);
-        // ViewHolder timeoutHolder = new ViewHolder(timeoutItem);
-        // timeoutHolder.onPause();
-        // break;
-        //
-        // default:
-        // break;
-        // }
-        // }
-
-        @SuppressWarnings("unused")
-        private void showAlert(String title, String msg) {
-
-            new AlertDialog.Builder(DownloadListActivity.this).setTitle(title).setMessage(msg)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                            dialog.dismiss();
-                        }
-                    }).create().show();
-        }
-    }
+		@SuppressWarnings("unused")
+		private void showAlert(String title, String msg) {
+			new AlertDialog.Builder(DownloadListActivity.this).setTitle(title).setMessage(msg).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			}).create().show();
+		}
+	}
 
 }
