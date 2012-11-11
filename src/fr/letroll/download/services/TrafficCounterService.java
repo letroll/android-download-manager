@@ -1,7 +1,7 @@
 
-package com.yyxu.download.services;
+package fr.letroll.download.services;
 
-import com.yyxu.download.utils.ConfigUtils;
+import fr.letroll.download.utils.ConfigUtils;
 
 import android.app.Service;
 import android.content.Context;

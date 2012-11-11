@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="hello">Hello World, DownloadManager!</string>
     <string name="app_name">DownloadManager</string>
-
+    <string name="wi_fi_traffic_">Wi-Fi traffic:</string>
+    <string name="_2g_3g_speed_">2G/3G speed:</string>
+    <string name="empty">Empty</string>
+    <string name="continu">Continue</string>
+    <string name="pause">Pause</string>
+    <string name="delete">Delete</string>
+    <string name="traffic_statistics">Traffic statistics</string>
+    <string name="add">Add</string>
+    <string name="delete_all">Delete all</string>
+    <string name="pause_all">Pause All</string>
+    <string name="network_not_connected">Network: Not Connected</string>
+    <string name="mobile_operators">Mobile operators:</string>
+    <string name="current_network_">Current network:</string>
+    <string name="reception_">"Reception: "</string>
+    <string name="send_">"Send "</string>
 </resources>

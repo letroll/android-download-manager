@@ -1,10 +1,10 @@
 
-package com.yyxu.download.services;
+package fr.letroll.download.services;
 
-import com.yyxu.download.utils.ConfigUtils;
-import com.yyxu.download.utils.MyIntents;
-import com.yyxu.download.utils.NetworkUtils;
-import com.yyxu.download.utils.StorageUtils;
+import fr.letroll.download.utils.ConfigUtils;
+import fr.letroll.download.utils.MyIntents;
+import fr.letroll.download.utils.NetworkUtils;
+import fr.letroll.download.utils.StorageUtils;
 
 import android.content.Context;
 import android.content.Intent;
@@ -71,17 +71,17 @@ public class DownloadManager extends Thread {
     public void addTask(String url) {
 
         if (!StorageUtils.isSDCardPresent()) {
-            Toast.makeText(mContext, "未发现SD卡", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, "Aucune carte SD trouvé", Toast.LENGTH_LONG).show();
             return;
         }
 
         if (!StorageUtils.isSdCardWrittenable()) {
-            Toast.makeText(mContext, "SD卡不能读写", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, "La carte SD n'est pas inscriptible", Toast.LENGTH_LONG).show();
             return;
         }
 
         if (getTotalTaskCount() >= MAX_TASK_COUNT) {
-            Toast.makeText(mContext, "任务列表已满", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, "Liste des tâches pleine", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -111,7 +111,7 @@ public class DownloadManager extends Thread {
 
     private void broadcastAddTask(String url, boolean isInterrupt) {
 
-        Intent nofityIntent = new Intent("com.yyxu.download.activities.DownloadListActivity");
+        Intent nofityIntent = new Intent("fr.letroll.download.activities.DownloadListActivity");
         nofityIntent.putExtra(MyIntents.TYPE, MyIntents.Types.ADD);
         nofityIntent.putExtra(MyIntents.URL, url);
         nofityIntent.putExtra(MyIntents.IS_PAUSED, isInterrupt);
@@ -293,7 +293,7 @@ public class DownloadManager extends Thread {
             mDownloadingTasks.remove(task);
 
             // notify list changed
-            Intent nofityIntent = new Intent("com.yyxu.download.activities.DownloadListActivity");
+            Intent nofityIntent = new Intent("fr.letroll.download.activities.DownloadListActivity");
             nofityIntent.putExtra(MyIntents.TYPE, MyIntents.Types.COMPLETE);
             nofityIntent.putExtra(MyIntents.URL, task.getUrl());
             mContext.sendBroadcast(nofityIntent);
@@ -315,7 +315,7 @@ public class DownloadManager extends Thread {
             public void updateProcess(DownloadTask task) {
 
                 Intent updateIntent = new Intent(
-                        "com.yyxu.download.activities.DownloadListActivity");
+                        "fr.letroll.download.activities.DownloadListActivity");
                 updateIntent.putExtra(MyIntents.TYPE, MyIntents.Types.PROCESS);
                 updateIntent.putExtra(MyIntents.PROCESS_SPEED, task.getDownloadSpeed() + "kbps | "
                         + task.getDownloadSize() + " / " + task.getTotalSize());
@@ -345,7 +345,7 @@ public class DownloadManager extends Thread {
                 }
 
                 // Intent errorIntent = new
-                // Intent("com.yyxu.download.activities.DownloadListActivity");
+                // Intent("fr.letroll.download.activities.DownloadListActivity");
                 // errorIntent.putExtra(MyIntents.TYPE, MyIntents.Types.ERROR);
                 // errorIntent.putExtra(MyIntents.ERROR_CODE, error);
                 // errorIntent.putExtra(MyIntents.ERROR_INFO,

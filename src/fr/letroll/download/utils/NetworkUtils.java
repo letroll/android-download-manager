@@ -1,4 +1,4 @@
-package com.yyxu.download.utils;
+package fr.letroll.download.utils;
 
 import java.util.UUID;
 
@@ -28,7 +28,7 @@ public class NetworkUtils {
 	}
 	
 	public static String getFileNameFromUrl(String url) {
-		// 通过 ‘？’ 和 ‘/’ 判断文件名
+		// Grâce à '? 'Et' / 'pour déterminer le nom du fichier
 		int index = url.lastIndexOf('?');
 		String filename;
 		if (index > 1) {
@@ -37,8 +37,8 @@ public class NetworkUtils {
 			filename = url.substring(url.lastIndexOf('/') + 1);
 		}
 
-		if (filename == null || "".equals(filename.trim())) {// 如果获取不到文件名称
-			filename = UUID.randomUUID() + ".apk";// 默认取一个文件名
+		if (filename == null || "".equals(filename.trim())) {// Si vous obtenez moins que le nom du fichier
+			filename = UUID.randomUUID() + ".apk";// Récupération par défaut un nom de fichier
 		}
 		return filename;
 	}

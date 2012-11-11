@@ -1,4 +1,4 @@
-package com.yyxu.download.activities;
+package fr.letroll.download.activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,9 +11,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.yyxu.download.R;
-import com.yyxu.download.utils.ConfigUtils;
-import com.yyxu.download.utils.StorageUtils;
+import fr.letroll.download.R;
+
+import fr.letroll.download.utils.ConfigUtils;
+import fr.letroll.download.utils.StorageUtils;
 
 public class TrafficStatActivity extends Activity {
 
@@ -58,41 +59,29 @@ public class TrafficStatActivity extends Activity {
 
 	private void getTrafficStats() {
 
-		ConnectivityManager conn = (ConnectivityManager) this
-				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		ConnectivityManager conn = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
 		if (conn.getActiveNetworkInfo() == null) {
-			netText.setText("当前联网方式: 未连接"
-					+ "\n运营商："
-					+ ConfigUtils.getString(this,
-							ConfigUtils.KEY_Network_Operator_Name));
+			netText.setText(getString(R.string.network_not_connected) + "\n"+getString(R.string.mobile_operators)+"：" + ConfigUtils.getString(this, ConfigUtils.KEY_Network_Operator_Name));
 		} else {
-			netText.setText("当前联网方式:"
-					+ conn.getActiveNetworkInfo().getTypeName()
-					+ "\n运营商："
-					+ ConfigUtils.getString(this,
-							ConfigUtils.KEY_Network_Operator_Name));
+			netText.setText(getString(R.string.current_network_) + conn.getActiveNetworkInfo().getTypeName() + "\n"+getString(R.string.mobile_operators)+"：" + ConfigUtils.getString(this, ConfigUtils.KEY_Network_Operator_Name));
 		}
 
 		long mobileRx = ConfigUtils.getLong(this, ConfigUtils.KEY_RX_MOBILE);
 		long mobileTx = ConfigUtils.getLong(this, ConfigUtils.KEY_TX_MOBILE);
-		appGprsText.setText("接收 " + StorageUtils.size(mobileRx) + " / 发送 "
-				+ StorageUtils.size(mobileTx));
+		appGprsText.setText(getString(R.string.reception_) + StorageUtils.size(mobileRx) + " / "+getString(R.string.send_) + StorageUtils.size(mobileTx));
 
 		long wifiRx = ConfigUtils.getLong(this, ConfigUtils.KEY_RX_WIFI);
 		long wifiTx = ConfigUtils.getLong(this, ConfigUtils.KEY_TX_WIFI);
-		appWifiText.setText("接收 " + StorageUtils.size(wifiRx) + " / 发送 "
-				+ StorageUtils.size(wifiTx));
+		appWifiText.setText(getString(R.string.reception_) + StorageUtils.size(wifiRx) + " / "+getString(R.string.send_) + StorageUtils.size(wifiTx));
 
 		try {
 			PackageManager packageManager = this.getPackageManager();
-			ApplicationInfo info = packageManager.getApplicationInfo(
-					this.getPackageName(), PackageManager.GET_META_DATA);
-			testText.setText("Totoal: " + TrafficStats.getUidRxBytes(info.uid)
-					+ " / " + "Totoal: " + TrafficStats.getUidTxBytes(info.uid));
+			ApplicationInfo info = packageManager.getApplicationInfo(this.getPackageName(), PackageManager.GET_META_DATA);
+			testText.setText("Total: " + TrafficStats.getUidRxBytes(info.uid) + " / " + "Total: " + TrafficStats.getUidTxBytes(info.uid));
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		
+
 	}
 }

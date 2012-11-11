@@ -1,4 +1,4 @@
-package com.yyxu.download.widgets;
+package fr.letroll.download.widgets;
 
 import java.util.HashMap;
 
@@ -8,9 +8,10 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.yyxu.download.R;
-import com.yyxu.download.services.DownloadTask;
-import com.yyxu.download.utils.NetworkUtils;
+import fr.letroll.download.R;
+
+import fr.letroll.download.services.DownloadTask;
+import fr.letroll.download.utils.NetworkUtils;
 
 public class ViewHolder {
 

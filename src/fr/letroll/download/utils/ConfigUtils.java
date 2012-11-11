@@ -1,4 +1,4 @@
-package com.yyxu.download.utils;
+package fr.letroll.download.utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import android.content.SharedPreferences.Editor;
 
 public class ConfigUtils {
 
-	public static final String PREFERENCE_NAME = "com.yyxu.download";
+	public static final String PREFERENCE_NAME = "fr.letroll.download";
 
 	public static SharedPreferences getPreferences(Context context) {
 		return context.getSharedPreferences(PREFERENCE_NAME,

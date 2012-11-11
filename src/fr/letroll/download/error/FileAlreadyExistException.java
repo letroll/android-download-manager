@@ -1,5 +1,5 @@
 
-package com.yyxu.download.error;
+package fr.letroll.download.error;
 
 public class FileAlreadyExistException extends DownloadException {
 

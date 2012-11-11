@@ -1,4 +1,4 @@
-package com.yyxu.download.widgets;
+package fr.letroll.download.widgets;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,8 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.yyxu.download.R;
-import com.yyxu.download.utils.MyIntents;
+import fr.letroll.download.R;
+
+import fr.letroll.download.utils.MyIntents;
 
 public class DownloadListAdapter extends BaseAdapter {
 
@@ -96,7 +97,7 @@ public class DownloadListAdapter extends BaseAdapter {
 		@Override
 		public void onClick(View v) {
 			Intent downloadIntent = new Intent(
-					"com.yyxu.download.services.IDownloadService");
+					"fr.letroll.download.services.IDownloadService");
 
 			switch (v.getId()) {
 			case R.id.btn_continue:

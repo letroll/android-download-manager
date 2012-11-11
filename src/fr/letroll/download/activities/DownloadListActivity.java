@@ -1,13 +1,14 @@
 
-package com.yyxu.download.activities;
+package fr.letroll.download.activities;
 
-import com.yyxu.download.R;
-import com.yyxu.download.services.TrafficCounterService;
-import com.yyxu.download.utils.MyIntents;
-import com.yyxu.download.utils.StorageUtils;
-import com.yyxu.download.utils.Utils;
-import com.yyxu.download.widgets.DownloadListAdapter;
-import com.yyxu.download.widgets.ViewHolder;
+import fr.letroll.download.R;
+
+import fr.letroll.download.services.TrafficCounterService;
+import fr.letroll.download.utils.MyIntents;
+import fr.letroll.download.utils.StorageUtils;
+import fr.letroll.download.utils.Utils;
+import fr.letroll.download.widgets.DownloadListAdapter;
+import fr.letroll.download.widgets.ViewHolder;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -46,12 +47,12 @@ public class DownloadListActivity extends Activity {
         setContentView(R.layout.download_list_activity);
 
         if (!StorageUtils.isSDCardPresent()) {
-            Toast.makeText(this, "未发现SD卡", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Aucune carte SD trouvé", Toast.LENGTH_LONG).show();
             return;
         }
 
         if (!StorageUtils.isSdCardWrittenable()) {
-            Toast.makeText(this, "SD卡不能读写", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "La carte SD n'est pas inscriptible", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -76,7 +77,7 @@ public class DownloadListActivity extends Activity {
             public void onClick(View v) {
 
                 // downloadManager.addTask(Utils.url[urlIndex]);
-                Intent downloadIntent = new Intent("com.yyxu.download.services.IDownloadService");
+                Intent downloadIntent = new Intent(MyIntents.DownloadService);
                 downloadIntent.putExtra(MyIntents.TYPE, MyIntents.Types.ADD);
                 downloadIntent.putExtra(MyIntents.URL, Utils.url[urlIndex]);
                 startService(downloadIntent);
@@ -102,7 +103,7 @@ public class DownloadListActivity extends Activity {
             public void onClick(View v) {
 
                 // Intent downloadIntent = new
-                // Intent("com.yyxu.download.services.IDownloadService");
+                // Intent("fr.letroll.download.services.IDownloadService");
                 // downloadIntent.putExtra(MyIntents.TYPE,
                 // MyIntents.Types.STOP);
                 // startService(downloadIntent);
@@ -127,7 +128,7 @@ public class DownloadListActivity extends Activity {
         Intent trafficIntent = new Intent(this, TrafficCounterService.class);
         startService(trafficIntent);
 
-        Intent downloadIntent = new Intent("com.yyxu.download.services.IDownloadService");
+        Intent downloadIntent = new Intent("fr.letroll.download.services.IDownloadService");
         downloadIntent.putExtra(MyIntents.TYPE, MyIntents.Types.START);
         startService(downloadIntent);
 
@@ -136,7 +137,7 @@ public class DownloadListActivity extends Activity {
         // handleIntent(intent);
         mReceiver = new MyReceiver();
         IntentFilter filter = new IntentFilter();
-        filter.addAction("com.yyxu.download.activities.DownloadListActivity");
+        filter.addAction("fr.letroll.download.activities.DownloadListActivity");
         registerReceiver(mReceiver, filter);
 
     }
@@ -162,7 +163,7 @@ public class DownloadListActivity extends Activity {
 
             if (intent != null
                     && intent.getAction().equals(
-                            "com.yyxu.download.activities.DownloadListActivity")) {
+                            "fr.letroll.download.activities.DownloadListActivity")) {
                 int type = intent.getIntExtra(MyIntents.TYPE, -1);
                 String url;
 

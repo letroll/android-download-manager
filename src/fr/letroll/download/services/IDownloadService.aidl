@@ -1,4 +1,4 @@
-package com.yyxu.download.services;
+package fr.letroll.download.services;
 
 interface IDownloadService {
 	

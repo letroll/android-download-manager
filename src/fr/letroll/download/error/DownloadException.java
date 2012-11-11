@@ -1,5 +1,5 @@
 
-package com.yyxu.download.error;
+package fr.letroll.download.error;
 
 public class DownloadException extends Exception {
     private static final long serialVersionUID = 1L;

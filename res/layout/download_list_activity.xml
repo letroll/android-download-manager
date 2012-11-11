@@ -7,7 +7,7 @@
     <ListView
         android:id="@+id/download_list"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1"
         android:divider="#ffffff"
         android:dividerHeight="10dip" >
@@ -22,25 +22,25 @@
             android:id="@+id/btn_pause_all"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:text="Pause All" />
+            android:text="@string/pause_all" />
 
         <Button
             android:id="@+id/btn_delete_all"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:text="关闭后台" />
+            android:text="@string/delete_all" />
 
         <Button
             android:id="@+id/btn_add"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:text="Add" />
-        
+            android:text="@string/add" />
+
         <Button
             android:id="@+id/btn_traffic"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:text="流量统计" />
+            android:text="@string/traffic_statistics" />
     </LinearLayout>
 
 </LinearLayout>

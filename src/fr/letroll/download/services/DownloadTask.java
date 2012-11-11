@@ -1,11 +1,12 @@
 
-package com.yyxu.download.services;
+package fr.letroll.download.services;
 
-import com.yyxu.download.error.FileAlreadyExistException;
-import com.yyxu.download.error.NoMemoryException;
-import com.yyxu.download.http.AndroidHttpClient;
-import com.yyxu.download.utils.NetworkUtils;
-import com.yyxu.download.utils.StorageUtils;
+
+import fr.letroll.download.error.FileAlreadyExistException;
+import fr.letroll.download.error.NoMemoryException;
+import fr.letroll.download.http.AndroidHttpClient;
+import fr.letroll.download.utils.NetworkUtils;
+import fr.letroll.download.utils.StorageUtils;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;

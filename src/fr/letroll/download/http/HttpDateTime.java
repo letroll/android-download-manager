@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.yyxu.download.http;
+package fr.letroll.download.http;
 
 import java.util.Calendar;
 import java.util.regex.Matcher;

@@ -1,4 +1,4 @@
-package com.yyxu.download.utils;
+package fr.letroll.download.utils;
 
 public class Utils {
 

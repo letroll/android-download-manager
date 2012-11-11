@@ -1,7 +1,9 @@
-package com.yyxu.download.utils;
+package fr.letroll.download.utils;
 
 public class MyIntents {
 
+	public static final String DownloadService = "fr.letroll.download.services.IDownloadService";
+	
 	public static final String TYPE = "type";
 	public static final String PROCESS_SPEED = "process_speed";
 	public static final String PROCESS_PROGRESS = "process_progress";

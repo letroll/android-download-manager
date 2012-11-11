@@ -1,5 +1,5 @@
 
-package com.yyxu.download.services;
+package fr.letroll.download.services;
 
 public interface DownloadTaskListener {
 

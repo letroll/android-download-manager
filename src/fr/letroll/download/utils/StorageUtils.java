@@ -1,5 +1,5 @@
 
-package com.yyxu.download.utils;
+package fr.letroll.download.utils;
 
 import android.content.Context;
 import android.content.Intent;
@@ -72,7 +72,7 @@ public class StorageUtils {
 
         try {
             FileInputStream fis = new FileInputStream(url);
-            return BitmapFactory.decodeStream(fis); // /把流转化为Bitmap图片
+            return BitmapFactory.decodeStream(fis); // /Débit dans le format Bitmap
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
