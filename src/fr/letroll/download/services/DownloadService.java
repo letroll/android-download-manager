@@ -68,6 +68,7 @@ public class DownloadService extends Service {
 				break;
 			case MyIntents.Types.STOP:
 				mDownloadManager.close();
+				this.stopSelf();
 				break;
 			case MyIntents.Types.EMPTY:
 				mDownloadManager.empty();

@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.magic.activity.MagicActivity;
 import com.magic.debug.Logger;
 import com.magic.debug.loggers.LogcatLogger;
 
@@ -26,22 +27,17 @@ import fr.letroll.download.utils.Utils;
 import fr.letroll.download.widgets.DownloadListAdapter;
 import fr.letroll.download.widgets.ViewHolder;
 
-public class DownloadListActivity extends Activity {
+public class DownloadListActivity extends MagicActivity {
 
 	private ListView downloadList;
 	private DownloadListAdapter downloadListAdapter;
 	private MyReceiver mReceiver;
 	private int urlIndex = 0;
 
-	LogcatLogger log;
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.download_list_activity);
-
-		log = new LogcatLogger();
-		Logger.addLogger(log);
 
 		if (!StorageUtils.isSDCardPresent()) {
 			Toast.makeText(this, "Aucune carte SD trouvé", Toast.LENGTH_LONG).show();
@@ -78,6 +74,18 @@ public class DownloadListActivity extends Activity {
 		registerReceiver(mReceiver, filter);
 	}
 
+	private void stopAllService() {
+		Intent downloadIntent = new Intent(MyIntents.DownloadService);
+		downloadIntent.putExtra(MyIntents.TYPE, MyIntents.Types.STOP);
+		startService(downloadIntent);
+		stopService(new Intent(DownloadListActivity.this, TrafficCounterService.class));
+	}
+
+	public void leave(View v) {
+		stopAllService();
+		this.finish();
+	}
+
 	public void add(View v) {
 		// downloadManager.addTask(Utils.url[urlIndex]);
 		Intent downloadIntent = new Intent(MyIntents.DownloadService);
@@ -95,8 +103,6 @@ public class DownloadListActivity extends Activity {
 		Intent downloadIntent = new Intent(MyIntents.DownloadService);
 		downloadIntent.putExtra(MyIntents.TYPE, MyIntents.Types.STOP);
 		startService(downloadIntent);
-		Intent trafficIntent = new Intent(DownloadListActivity.this, TrafficCounterService.class);
-		stopService(trafficIntent);
 	}
 
 	public void delete_all(View v) {

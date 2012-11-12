@@ -16,4 +16,5 @@
     <string name="current_network_">Current network:</string>
     <string name="reception_">"Reception: "</string>
     <string name="send_">"Send "</string>
+    <string name="leave">Leave</string>
 </resources>
