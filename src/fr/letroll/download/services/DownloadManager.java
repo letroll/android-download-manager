@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import com.magic.debug.Logger;
+
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
@@ -129,9 +131,6 @@ public class DownloadManager extends Thread {
 				return true;
 			}
 		}
-		for (int i = 0; i < mTaskQueue.size(); i++) {
-			task = mTaskQueue.get(i);
-		}
 		return false;
 	}
 
@@ -208,7 +207,7 @@ public class DownloadManager extends Thread {
 			}
 		}
 		for (int i = 0; i < mTaskQueue.size(); i++) {
-				mTaskQueue.remove(mTaskQueue.get(i));
+			mTaskQueue.remove(mTaskQueue.get(i));
 		}
 		for (int i = 0; i < mPausingTasks.size(); i++) {
 			task = mPausingTasks.get(i);
@@ -216,21 +215,26 @@ public class DownloadManager extends Thread {
 				mPausingTasks.remove(task);
 			}
 		}
-    }
-	
+	}
+
 	public synchronized void deleteTask(String url) {
 		DownloadTask task;
+		Logger.loge(mContext, "deleteTask:" + url);
 		for (int i = 0; i < mDownloadingTasks.size(); i++) {
 			task = mDownloadingTasks.get(i);
 			if (task != null && task.getUrl().equals(url)) {
-				File file = new File(StorageUtils.FILE_ROOT + NetworkUtils.getFileNameFromUrl(task.getUrl()));
+				File file = new File(StorageUtils.FILE_ROOT + NetworkUtils.getFileNameFromUrl(url));
 				if (file.exists())
 					file.delete();
 				task.onCancelled();
 				completeTask(task);
-				return;
+				break;
 			}
 		}
+		Logger.loge(mContext, "deleteTask: here");
+		File file = new File(StorageUtils.FILE_ROOT + NetworkUtils.getFileNameFromUrl(url) + ".download");
+		if (file.exists())
+			file.delete();
 		for (int i = 0; i < mTaskQueue.size(); i++) {
 			task = mTaskQueue.get(i);
 			if (task != null && task.getUrl().equals(url)) {
@@ -369,7 +373,7 @@ public class DownloadManager extends Thread {
 				try {
 					Thread.sleep(1000); // sleep
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					// e.printStackTrace();
 				}
 			}
 			return task;
@@ -384,11 +388,6 @@ public class DownloadManager extends Thread {
 
 		public int size() {
 			return taskQueue.size();
-		}
-
-		@SuppressWarnings("unused")
-		public boolean remove(int position) {
-			return taskQueue.remove(get(position));
 		}
 
 		public boolean remove(DownloadTask task) {

@@ -2,7 +2,6 @@ package fr.letroll.download.activities;
 
 import java.io.IOException;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -16,8 +15,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.magic.activity.MagicActivity;
-import com.magic.debug.Logger;
-import com.magic.debug.loggers.LogcatLogger;
 
 import fr.letroll.download.R;
 import fr.letroll.download.services.TrafficCounterService;
