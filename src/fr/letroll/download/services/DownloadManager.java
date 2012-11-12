@@ -1,20 +1,19 @@
 package fr.letroll.download.services;
 
-import fr.letroll.download.utils.ConfigUtils;
-import fr.letroll.download.utils.MyIntents;
-import fr.letroll.download.utils.NetworkUtils;
-import fr.letroll.download.utils.StorageUtils;
-
-import android.content.Context;
-import android.content.Intent;
-import android.widget.Toast;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+
+import android.content.Context;
+import android.content.Intent;
+import android.widget.Toast;
+import fr.letroll.download.utils.ConfigUtils;
+import fr.letroll.download.utils.MyIntents;
+import fr.letroll.download.utils.NetworkUtils;
+import fr.letroll.download.utils.StorageUtils;
 
 public class DownloadManager extends Thread {
 
@@ -45,7 +44,6 @@ public class DownloadManager extends Thread {
 	public void close() {
 		isRunning = false;
 		pauseAllTask();
-//		this.stop();
 		this.interrupt();
 	}
 
@@ -228,7 +226,6 @@ public class DownloadManager extends Thread {
 				File file = new File(StorageUtils.FILE_ROOT + NetworkUtils.getFileNameFromUrl(task.getUrl()));
 				if (file.exists())
 					file.delete();
-
 				task.onCancelled();
 				completeTask(task);
 				return;
@@ -309,7 +306,7 @@ public class DownloadManager extends Thread {
 			public void updateProcess(DownloadTask task) {
 				Intent updateIntent = new Intent(MyIntents.DownloadListActivity);
 				updateIntent.putExtra(MyIntents.TYPE, MyIntents.Types.PROCESS);
-				updateIntent.putExtra(MyIntents.PROCESS_SPEED, task.getDownloadSpeed() + "kbps | " + task.getDownloadSize() + " / " + task.getTotalSize());
+				updateIntent.putExtra(MyIntents.PROCESS_SPEED, task.getDownloadSpeed() + "kbps | " + StorageUtils.size(task.getDownloadSize()) + " / " + StorageUtils.size(task.getTotalSize()));
 				updateIntent.putExtra(MyIntents.PROCESS_PROGRESS, task.getDownloadPercent() + "");
 				updateIntent.putExtra(MyIntents.URL, task.getUrl());
 				mContext.sendBroadcast(updateIntent);

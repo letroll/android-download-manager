@@ -1,13 +1,6 @@
 package fr.letroll.download.activities;
 
-import fr.letroll.download.R;
-
-import fr.letroll.download.services.TrafficCounterService;
-import fr.letroll.download.utils.MyIntents;
-import fr.letroll.download.utils.StorageUtils;
-import fr.letroll.download.utils.Utils;
-import fr.letroll.download.widgets.DownloadListAdapter;
-import fr.letroll.download.widgets.ViewHolder;
+import java.io.IOException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -19,29 +12,37 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.io.IOException;
+import com.magic.debug.Logger;
+import com.magic.debug.loggers.LogcatLogger;
+
+import fr.letroll.download.R;
+import fr.letroll.download.services.TrafficCounterService;
+import fr.letroll.download.utils.MyIntents;
+import fr.letroll.download.utils.StorageUtils;
+import fr.letroll.download.utils.Utils;
+import fr.letroll.download.widgets.DownloadListAdapter;
+import fr.letroll.download.widgets.ViewHolder;
 
 public class DownloadListActivity extends Activity {
 
 	private ListView downloadList;
-	private Button addButton;
-	private Button pauseButton;
-	private Button deleteButton;
-	private Button trafficButton;
-
 	private DownloadListAdapter downloadListAdapter;
 	private MyReceiver mReceiver;
-
 	private int urlIndex = 0;
+
+	LogcatLogger log;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.download_list_activity);
+
+		log = new LogcatLogger();
+		Logger.addLogger(log);
+
 		if (!StorageUtils.isSDCardPresent()) {
 			Toast.makeText(this, "Aucune carte SD trouvé", Toast.LENGTH_LONG).show();
 			return;
@@ -60,57 +61,6 @@ public class DownloadListActivity extends Activity {
 		downloadListAdapter = new DownloadListAdapter(this);
 		downloadList.setAdapter(downloadListAdapter);
 
-		addButton = (Button) findViewById(R.id.btn_add);
-		pauseButton = (Button) findViewById(R.id.btn_pause_all);
-		deleteButton = (Button) findViewById(R.id.btn_delete_all);
-		trafficButton = (Button) findViewById(R.id.btn_traffic);
-
-		addButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// downloadManager.addTask(Utils.url[urlIndex]);
-				Intent downloadIntent = new Intent(MyIntents.DownloadService);
-				downloadIntent.putExtra(MyIntents.TYPE, MyIntents.Types.ADD);
-				downloadIntent.putExtra(MyIntents.URL, Utils.url[urlIndex]);
-				startService(downloadIntent);
-
-				urlIndex++;
-				if (urlIndex >= Utils.url.length) {
-					urlIndex = 0;
-				}
-			}
-		});
-
-		pauseButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent downloadIntent = new Intent(MyIntents.DownloadService);
-				downloadIntent.putExtra(MyIntents.TYPE, MyIntents.Types.STOP);
-				startService(downloadIntent);
-				Intent trafficIntent = new Intent(DownloadListActivity.this, TrafficCounterService.class);
-				stopService(trafficIntent);				
-			}
-		});
-
-		deleteButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent downloadIntent = new Intent(MyIntents.DownloadService);
-				downloadIntent.putExtra(MyIntents.TYPE, MyIntents.Types.EMPTY);
-				startService(downloadIntent);
-				Intent trafficIntent = new Intent(DownloadListActivity.this, TrafficCounterService.class);
-				stopService(trafficIntent);		
-			}
-		});
-
-		trafficButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(DownloadListActivity.this, TrafficStatActivity.class);
-				startActivity(intent);
-			}
-		});
-
 		// downloadManager.startManage();
 		Intent trafficIntent = new Intent(this, TrafficCounterService.class);
 		startService(trafficIntent);
@@ -126,6 +76,40 @@ public class DownloadListActivity extends Activity {
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(MyIntents.DownloadListActivity);
 		registerReceiver(mReceiver, filter);
+	}
+
+	public void add(View v) {
+		// downloadManager.addTask(Utils.url[urlIndex]);
+		Intent downloadIntent = new Intent(MyIntents.DownloadService);
+		downloadIntent.putExtra(MyIntents.TYPE, MyIntents.Types.ADD);
+		downloadIntent.putExtra(MyIntents.URL, Utils.url[urlIndex]);
+		startService(downloadIntent);
+
+		urlIndex++;
+		if (urlIndex >= Utils.url.length) {
+			urlIndex = 0;
+		}
+	}
+
+	public void pause_all(View v) {
+		Intent downloadIntent = new Intent(MyIntents.DownloadService);
+		downloadIntent.putExtra(MyIntents.TYPE, MyIntents.Types.STOP);
+		startService(downloadIntent);
+		Intent trafficIntent = new Intent(DownloadListActivity.this, TrafficCounterService.class);
+		stopService(trafficIntent);
+	}
+
+	public void delete_all(View v) {
+		Intent downloadIntent = new Intent(MyIntents.DownloadService);
+		downloadIntent.putExtra(MyIntents.TYPE, MyIntents.Types.EMPTY);
+		startService(downloadIntent);
+		Intent trafficIntent = new Intent(DownloadListActivity.this, TrafficCounterService.class);
+		stopService(trafficIntent);
+	}
+
+	public void traffic_stat(View v) {
+		Intent intent = new Intent(DownloadListActivity.this, TrafficStatActivity.class);
+		startActivity(intent);
 	}
 
 	@Override

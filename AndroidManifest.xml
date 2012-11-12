@@ -4,7 +4,9 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk android:minSdkVersion="8" />
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="15" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
@@ -12,10 +14,12 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name" >
+        android:label="@string/app_name"
+        android:theme="@style/Theme.Sherlock" >
         <activity android:name=".activities.DownloadListActivity" >
-            <intent-filter >
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -27,7 +31,7 @@
         <service android:name=".services.TrafficCounterService" >
         </service>
         <service android:name=".services.DownloadService" >
-            <intent-filter >
+            <intent-filter>
                 <action android:name="fr.letroll.download.services.IDownloadService" />
             </intent-filter>
         </service>

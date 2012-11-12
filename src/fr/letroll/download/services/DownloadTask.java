@@ -138,7 +138,6 @@ public class DownloadTask extends AsyncTask<Void, Integer, Long> {
 				client.close();
 			}
 		}
-
 		return result;
 	}
 

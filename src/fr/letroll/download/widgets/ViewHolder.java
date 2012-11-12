@@ -7,10 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import fr.letroll.download.R;
-
-import fr.letroll.download.services.DownloadTask;
 import fr.letroll.download.utils.NetworkUtils;
 
 public class ViewHolder {
@@ -33,18 +30,15 @@ public class ViewHolder {
 		if (parentView != null) {
 			titleText = (TextView) parentView.findViewById(R.id.title);
 			speedText = (TextView) parentView.findViewById(R.id.speed);
-			progressBar = (ProgressBar) parentView
-					.findViewById(R.id.progress_bar);
+			progressBar = (ProgressBar) parentView.findViewById(R.id.progress_bar);
 			pauseButton = (Button) parentView.findViewById(R.id.btn_pause);
 			deleteButton = (Button) parentView.findViewById(R.id.btn_delete);
-			continueButton = (Button) parentView
-					.findViewById(R.id.btn_continue);
+			continueButton = (Button) parentView.findViewById(R.id.btn_continue);
 			hasInited = true;
 		}
 	}
 
-	public static HashMap<Integer, String> getItemDataMap(String url,
-			String speed, String progress, String isPaused) {
+	public static HashMap<Integer, String> getItemDataMap(String url, String speed, String progress, String isPaused) {
 		HashMap<Integer, String> item = new HashMap<Integer, String>();
 		item.put(KEY_URL, url);
 		item.put(KEY_SPEED, speed);
@@ -55,8 +49,7 @@ public class ViewHolder {
 
 	public void setData(HashMap<Integer, String> item) {
 		if (hasInited) {
-			titleText
-					.setText(NetworkUtils.getFileNameFromUrl(item.get(KEY_URL)));
+			titleText.setText(NetworkUtils.getFileNameFromUrl(item.get(KEY_URL)));
 			speedText.setText(item.get(KEY_SPEED));
 			String progress = item.get(KEY_PROGRESS);
 			if (TextUtils.isEmpty(progress)) {
@@ -81,34 +74,18 @@ public class ViewHolder {
 		setData(url, speed, progress, false + "");
 	}
 
-	public void setData(String url, String speed, String progress,
-			String isPaused) {
+	public void setData(String url, String speed, String progress, String isPaused) {
 		if (hasInited) {
-			HashMap<Integer, String> item = getItemDataMap(url, speed,
-					progress, isPaused);
+			HashMap<Integer, String> item = getItemDataMap(url, speed, progress, isPaused);
 
-			titleText
-					.setText(NetworkUtils.getFileNameFromUrl(item.get(KEY_URL)));
+			titleText.setText(NetworkUtils.getFileNameFromUrl(item.get(KEY_URL)));
 			speedText.setText(speed);
 			if (TextUtils.isEmpty(progress)) {
 				progressBar.setProgress(0);
 			} else {
-				progressBar
-						.setProgress(Integer.parseInt(item.get(KEY_PROGRESS)));
+				progressBar.setProgress(Integer.parseInt(item.get(KEY_PROGRESS)));
 			}
 
-		}
-	}
-
-	public void bindTask(DownloadTask task) {
-		if (hasInited) {
-			titleText.setText(NetworkUtils.getFileNameFromUrl(task.getUrl()));
-			speedText.setText(task.getDownloadSpeed() + "kbps | "
-					+ task.getDownloadSize() + " / " + task.getTotalSize());
-			progressBar.setProgress((int) task.getDownloadPercent());
-			if (task.isInterrupt()) {
-				onPause();
-			}
 		}
 	}
 

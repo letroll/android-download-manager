@@ -22,24 +22,28 @@
             android:id="@+id/btn_pause_all"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
+            android:onClick="pause_all"
             android:text="@string/pause_all" />
 
         <Button
             android:id="@+id/btn_delete_all"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
+            android:onClick="delete_all"
             android:text="@string/delete_all" />
 
         <Button
             android:id="@+id/btn_add"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
+            android:onClick="add"
             android:text="@string/add" />
 
         <Button
             android:id="@+id/btn_traffic"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
+            android:onClick="traffic_stat"
             android:text="@string/traffic_statistics" />
     </LinearLayout>
 

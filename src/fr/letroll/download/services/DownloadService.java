@@ -1,5 +1,7 @@
 package fr.letroll.download.services;
 
+import com.magic.debug.Logger;
+
 import fr.letroll.download.services.IDownloadService;
 
 import fr.letroll.download.utils.MyIntents;
@@ -26,11 +28,8 @@ public class DownloadService extends Service {
 	}
 
 	@Override
-	public void onStart(Intent intent, int startId) {
-		super.onStart(intent, startId);
-		// if (mDownloadManager == null) {
-		// mDownloadManager = new DownloadManager(this);
-		// }
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		Logger.loge(this, "onStartCommand");
 		if (intent.getAction().equals(MyIntents.DownloadService)) {
 			int type = intent.getIntExtra(MyIntents.TYPE, -1);
 			String url;
@@ -77,7 +76,7 @@ public class DownloadService extends Service {
 				break;
 			}
 		}
-
+		return super.onStartCommand(intent, flags, startId);
 	}
 
 	private class DownloadServiceImpl extends IDownloadService.Stub {
@@ -97,10 +96,10 @@ public class DownloadService extends Service {
 		}
 
 		@Override
-        public void pauseTasks() throws RemoteException {
-	        mDownloadManager.close();
-        }
-		
+		public void pauseTasks() throws RemoteException {
+			mDownloadManager.close();
+		}
+
 		@Override
 		public void deleteTask(String url) throws RemoteException {
 			mDownloadManager.deleteTask(url);
@@ -112,9 +111,9 @@ public class DownloadService extends Service {
 		}
 
 		@Override
-        public void deleteTasks() throws RemoteException {
-	        mDownloadManager.empty();
-        }
+		public void deleteTasks() throws RemoteException {
+			mDownloadManager.empty();
+		}
 
 	}
 
